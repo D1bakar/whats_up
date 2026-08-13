@@ -35,6 +35,7 @@ def test_settings() -> Settings:
         WHATSAPP_APP_SECRET="",
         WHATSAPP_OUTBOUND_MAX_RETRIES=2,
         WHATSAPP_OUTBOUND_RETRY_BASE_DELAY=0.01,
+        AI_PROVIDER="disabled",
     )
 
 

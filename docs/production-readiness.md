@@ -11,6 +11,7 @@ This document tracks what is **done** vs **required** before treating WhatsApp P
 | Deterministic bot engine | Done |
 | PostgreSQL persistence + migrations | Done |
 | Idempotency (webhook + message) | Done |
+| AI layer (provider abstraction, orchestrator, mock provider) | Done |
 | CI pipeline (lint, test, build) | Done |
 | Docker Compose local stack | Done |
 | MIT license + contributor docs | Done |
@@ -39,7 +40,7 @@ This document tracks what is **done** vs **required** before treating WhatsApp P
 ### P2 — Product maturity
 
 - [ ] **Admin dashboard UI** — inbox, conversation view, message history
-- [ ] **AI / LLM integration** — optional, behind provider interface
+- [ ] **AI / LLM integration** — optional, behind provider interface *(foundation done; OpenAI requires production key)*
 - [ ] **Multi-tenant business accounts** — proper WABA / phone number onboarding
 - [ ] **Outbound message audit table** — dedicated `outbound_messages` entity per architecture
 - [ ] **Branch protection + required CI** on `main`/`master`

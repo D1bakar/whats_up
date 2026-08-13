@@ -24,6 +24,7 @@ sequenceDiagram
     participant ID as WebhookIdempotencyService
     participant MP as MessageProcessingService
     participant BE as BotEngine
+    participant AI as AIOrchestrator
     participant OUT as OutboundMessageService
     participant PR as WhatsAppProvider
 
@@ -37,7 +38,13 @@ sequenceDiagram
         MP->>MP: Resolve contact & conversation
         MP->>MP: Register inbound wamid
         MP->>BE: route message
-        BE-->>MP: BotResponse list
+        alt deterministic command or state handler
+            BE-->>MP: BotResponse list
+        else natural language (AI enabled)
+            BE->>AI: generate_reply
+            AI-->>BE: validated AI response
+            BE-->>MP: BotResponse list
+        end
         MP->>OUT: send_text_message
         OUT->>PR: send_message
         PR-->>OUT: message_id
@@ -82,9 +89,26 @@ The bot engine and webhook handlers never construct raw Meta HTTP requests.
 - **`BotRouter`** — command registry + state-specific handlers (not a giant if/else chain).
 - **`ConversationStateMachine`** — validates and persists state transitions.
 - **Commands:** `/start`, `/help`, `/menu`, `/demo` (+ aliases without leading slash).
-- **Default text handler** — deterministic fallback; no AI.
+- **Default text handler** — routes natural-language messages to AI when enabled; deterministic fallback when disabled or on AI failure.
+- **AI routing** — `/start`, `/help`, `/menu`, `/demo`, unknown commands, and state handlers (demo flow) never call AI.
 
-### 5. Persistence (`app/models/`)
+### 5. AI layer (`app/ai/`)
+
+- **`AIProvider` protocol** — `generate_response`, `generate_structured_response`.
+- **`MockAIProvider`** — local dev and tests (default when `AI_PROVIDER=mock`).
+- **`OpenAIProvider`** — httpx-based Chat Completions adapter (requires `OPENAI_API_KEY`).
+- **`AIOrchestrator`** — limits, retries, validation, fallback; does not send WhatsApp messages or access secrets.
+- **`ConversationContextBuilder`** — bounded recent message history with secret redaction.
+- **Versioned prompts** — separate system instructions, business rules, context, and user message (`prompts/v1.py`).
+- **`ToolRegistry`** — foundation for future typed tools (no dangerous tools registered).
+
+Flow for natural-language text in `MAIN_MENU`:
+
+```
+MessageProcessingService → BotEngine → AITextHandler → AIOrchestrator → AIProvider → BotResponse
+```
+
+### 6. Persistence (`app/models/`)
 
 | Table | Purpose |
 |-------|---------|
@@ -112,6 +136,8 @@ Both use database constraints. PostgreSQL uses `INSERT ... ON CONFLICT DO NOTHIN
 | Malformed payload | 400 or counted as parse error; no bot execution |
 | Missing sender identity | Message ignored safely |
 | Handler exception | Safe fallback response; logged internally |
+| AI provider failure | Deterministic fallback message; logged without secrets |
+| AI input/abuse limits | Deterministic limit message; no provider call |
 | Outbound provider failure | Outbound message marked failed; inbound may be retried via webhook |
 | Database unavailable | 503 from webhook; Meta will retry |
 | Unsupported message type | Marked unsupported; no outbound reply |
@@ -134,6 +160,10 @@ All configuration via environment variables (`app/core/config.py`). See `.env.ex
 
 Default provider: `WHATSAPP_PROVIDER=mock` — no external WhatsApp API calls.
 
+Default AI: `AI_PROVIDER=mock` — no external AI API calls. Set `AI_PROVIDER=disabled` to use deterministic fallback only.
+
+See `.env.example` for all AI environment variables.
+
 ## Implemented phases
 
 | Phase | Scope |
@@ -141,15 +171,17 @@ Default provider: `WHATSAPP_PROVIDER=mock` — no external WhatsApp API calls.
 | 0 — Foundation | App scaffold, health, DB, Docker, CI |
 | 1 — WhatsApp integration | Provider, webhooks, idempotency, outbound retries |
 | Bot engine | Commands, state machine, conversation persistence, message pipeline |
+| AI layer | Provider abstraction, orchestrator, context, prompts, limits, tool foundation |
 
 ## Not yet implemented
 
 - Admin REST API and authentication
 - Background worker / queue-based processing
-- AI/LLM provider integration
 - Admin dashboard functionality
 - Billing, analytics, `BotConfig` entity
 - Production deployment manifests beyond Docker Compose
+- AI tool execution (registry foundation only)
+- Multi-provider AI routing per tenant/bot
 
 ## API documentation
 

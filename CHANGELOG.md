@@ -8,9 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- MIT license and polished README with tech badges
-- GitHub issue/PR templates and production readiness checklist
-- `.gitattributes` for accurate GitHub language detection
+- AI layer: provider abstraction, orchestrator, context builder, versioned prompts, mock/OpenAI adapters
+- AI integration with bot engine (deterministic commands bypass AI; natural language routed to orchestrator)
+- Comprehensive AI test suite (`tests/test_ai_layer.py`)
+- Deployment guide (`docs/deployment.md`) and optional CD workflow for GHCR image publishing
+
+### Changed
+- `.env.example` expanded with AI configuration variables
+- Architecture documentation updated for AI layer
 
 ## [0.1.0] - 2026-08-13
 

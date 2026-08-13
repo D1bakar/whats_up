@@ -69,6 +69,36 @@ class Settings(BaseSettings):
         alias="WHATSAPP_OUTBOUND_RETRY_BASE_DELAY",
     )
 
+    # AI provider selection
+    ai_provider: Literal["mock", "openai", "disabled"] = Field(
+        default="mock",
+        alias="AI_PROVIDER",
+    )
+    openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
+    ai_model: str = Field(default="gpt-4o-mini", alias="AI_MODEL")
+    ai_request_timeout: float = Field(default=30.0, alias="AI_REQUEST_TIMEOUT")
+    ai_max_input_chars: int = Field(default=4000, alias="AI_MAX_INPUT_CHARS")
+    ai_max_output_tokens: int = Field(default=500, alias="AI_MAX_OUTPUT_TOKENS")
+    ai_max_output_chars: int = Field(default=2000, alias="AI_MAX_OUTPUT_CHARS")
+    ai_max_context_messages: int = Field(default=10, alias="AI_MAX_CONTEXT_MESSAGES")
+    ai_max_user_message_length: int = Field(default=1000, alias="AI_MAX_USER_MESSAGE_LENGTH")
+    ai_max_requests_per_conversation: int = Field(
+        default=20,
+        alias="AI_MAX_REQUESTS_PER_CONVERSATION",
+    )
+    ai_request_window_seconds: int = Field(default=3600, alias="AI_REQUEST_WINDOW_SECONDS")
+    ai_max_retries: int = Field(default=2, alias="AI_MAX_RETRIES")
+    ai_retry_base_delay: float = Field(default=1.0, alias="AI_RETRY_BASE_DELAY")
+    ai_temperature: float = Field(default=0.7, alias="AI_TEMPERATURE")
+
+    @property
+    def ai_enabled(self) -> bool:
+        return self.ai_provider != "disabled"
+
+    @property
+    def openai_configured(self) -> bool:
+        return bool(self.openai_api_key.strip())
+
     @property
     def whatsapp_signature_required(self) -> bool:
         return bool(self.whatsapp_app_secret.strip())

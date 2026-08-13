@@ -196,6 +196,25 @@ class MessageRepository:
     async def get_by_wamid(self, wamid: str) -> Message | None:
         return await self._get_by_wamid(wamid)
 
+    async def get_recent_messages(
+        self,
+        conversation_id: str,
+        *,
+        limit: int,
+    ) -> list[Message]:
+        from uuid import UUID
+
+        stmt = (
+            select(Message)
+            .where(Message.conversation_id == UUID(conversation_id))
+            .order_by(Message.created_at.desc())
+            .limit(limit)
+        )
+        result = await self._session.execute(stmt)
+        messages = list(result.scalars().all())
+        messages.reverse()
+        return messages
+
     async def _get_by_wamid(self, wamid: str) -> Message | None:
         result = await self._session.execute(select(Message).where(Message.wamid == wamid))
         return result.scalar_one_or_none()

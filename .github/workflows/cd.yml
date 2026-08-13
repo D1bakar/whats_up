@@ -1,0 +1,79 @@
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_images:
+        description: Publish container images to GHCR
+        required: true
+        default: true
+        type: boolean
+
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    if: inputs.publish_images
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image namespace
+        id: meta
+        run: echo "repo=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ steps.meta.outputs.repo }}-api:${{ github.sha }}
+            ghcr.io/${{ steps.meta.outputs.repo }}-api:latest
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ steps.meta.outputs.repo }}-frontend:${{ github.sha }}
+            ghcr.io/${{ steps.meta.outputs.repo }}-frontend:latest
+
+  deploy-compose:
+    needs: publish
+    if: inputs.publish_images && secrets.DEPLOY_HOST != ''
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH (Docker Compose)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd "${{ secrets.DEPLOY_PATH || '/opt/whats_up' }}"
+            git fetch origin master
+            git checkout ${{ github.sha }}
+            docker compose -f docker/docker-compose.yml pull
+            docker compose -f docker/docker-compose.yml up -d --build
+            docker compose -f docker/docker-compose.yml exec -T api alembic upgrade head
+            curl -fsS http://localhost:8000/health

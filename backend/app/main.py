@@ -47,6 +47,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         environment=settings.environment,
         whatsapp_provider=settings.whatsapp_provider,
         meta_configured=settings.meta_whatsapp_configured,
+        ai_provider=settings.ai_provider,
+        ai_enabled=settings.ai_enabled,
     )
     try:
         yield

@@ -24,6 +24,14 @@ DEFAULT_FALLBACK = (
     "I didn't understand that.\n\nTry /menu to see available options, or /help for commands."
 )
 
+AI_UNAVAILABLE = (
+    "I'm having trouble responding right now.\n\nTry /menu or /help for available options."
+)
+
+AI_RATE_LIMITED = "You've sent many messages recently. Please wait a while before trying again."
+
+AI_INPUT_TOO_LONG = "Your message is too long. Please send a shorter message."
+
 UNKNOWN_COMMAND = "Unknown command.\n\nSend /help to see what I can do, or /menu for the main menu."
 
 DEMO_FLOW_START = (

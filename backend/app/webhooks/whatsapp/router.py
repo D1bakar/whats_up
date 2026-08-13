@@ -76,7 +76,7 @@ async def receive_webhook(
 
     logger.info("webhook_received", object_type=payload.get("object"))
 
-    inbound_service = InboundEventService(provider, outbound_service, db)
+    inbound_service = InboundEventService(provider, outbound_service, db, settings)
 
     try:
         result = await inbound_service.handle_webhook_payload(payload)

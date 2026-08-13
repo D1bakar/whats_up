@@ -15,6 +15,7 @@ class BotContext:
     current_state: ConversationState
     state_data: dict[str, object] = field(default_factory=dict)
     text: str | None = None
+    message_id: str | None = None
 
 
 @dataclass(frozen=True)

@@ -30,6 +30,7 @@ class BotEngine:
             current_state=current_state,
             state_data=state_data,
             text=message.text,
+            message_id=message.message_id,
         )
 
         try:
