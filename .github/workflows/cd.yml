@@ -56,13 +56,27 @@ jobs:
 
   deploy-compose:
     needs: publish
-    if: inputs.publish_images && secrets.DEPLOY_HOST != ''
+    if: inputs.publish_images
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Skip when deploy host is not configured
+        id: gate
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          if [ -z "$DEPLOY_HOST" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "DEPLOY_HOST not configured; skipping remote deploy."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.configured == 'true'
 
       - name: Deploy via SSH (Docker Compose)
+        if: steps.gate.outputs.configured == 'true'
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
