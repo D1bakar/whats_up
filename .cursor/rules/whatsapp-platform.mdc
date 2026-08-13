@@ -1,0 +1,37 @@
+---
+description: WhatsApp Platform development standards for agents working in this repository
+alwaysApply: true
+---
+
+# WhatsApp Platform — Agent Rules
+
+## Before changing code
+
+1. Inspect the existing implementation and `docs/architecture.md`.
+2. Follow the approved architecture in `.cursor/plans/` only as reference — implement what exists in code.
+3. Do not invent APIs, database tables, or Meta endpoints that are not in the codebase or plan.
+
+## Scope and quality
+
+- Keep changes focused; avoid unrelated refactors.
+- Match existing patterns: FastAPI services, SQLAlchemy models, provider abstraction, structlog.
+- Use strong typing; run `ruff`, `mypy`, and `pytest` after backend changes.
+- Do not modify tests to hide failures — fix root causes.
+
+## Security
+
+- Never hardcode secrets, tokens, or production credentials.
+- Never commit `.env` or local credential files.
+- Use `.env.example` for documented placeholders only.
+- Do not log access tokens or webhook secrets.
+
+## Architecture boundaries
+
+- Webhook handlers stay thin; business logic lives in application services.
+- Bot engine must not depend on raw Meta HTTP — use `WhatsAppProvider` and internal schemas.
+- Idempotency must use persistent storage (database constraints), not in-memory deduplication alone.
+
+## Git
+
+- Keep commits focused with clear conventional messages.
+- Do not force-push or rewrite history unless explicitly requested.
