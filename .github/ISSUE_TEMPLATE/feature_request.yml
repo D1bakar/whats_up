@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose a new capability or enhancement
+title: "[Feature]: "
+labels:
+  - enhancement
+  - needs-triage
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem does this solve? Who is it for?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Bot engine
+        - WhatsApp / Meta integration
+        - Admin API / dashboard
+        - AI / LLM
+        - Infrastructure / DevOps
+        - Security
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Checklist
+      options:
+        - label: This aligns with the architecture in docs/architecture.md
+        - label: I am willing to help implement or test this
+        - label: This requires a breaking change

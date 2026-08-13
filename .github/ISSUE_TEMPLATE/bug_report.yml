@@ -1,0 +1,65 @@
+name: Bug report
+description: Report incorrect behavior, regressions, or failures
+title: "[Bug]: "
+labels:
+  - bug
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please do **not** include secrets, tokens, or `.env` contents.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear description of the bug
+      placeholder: Webhook returns 503 when Postgres is unavailable...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start postgres via docker compose
+        2. POST /webhooks/whatsapp with fixture...
+        3. See error...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+      placeholder: fc8b885 or v0.1.0
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Webhook / WhatsApp integration
+        - Bot engine
+        - Database / migrations
+        - API / health checks
+        - Frontend
+        - CI / Docker
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs (redact secrets)
+      render: shell

@@ -1,0 +1,18 @@
+# Linguist overrides — accurate language detection on GitHub
+# https://github.com/github-linguist/linguist/blob/master/docs/overrides.md
+
+backend/**          linguist-language=Python
+frontend/**/*.ts    linguist-language=TypeScript
+frontend/**/*.tsx   linguist-language=TypeScript
+frontend/**/*.css   linguist-language=CSS
+frontend/**/*.js    linguist-language=JavaScript
+**/Dockerfile       linguist-language=Dockerfile
+scripts/**/*.sh     linguist-language=Shell
+docker/**           linguist-language=Dockerfile
+
+# Exclude generated / lock / fixture noise from language stats
+**/uv.lock          linguist-generated
+**/package-lock.json linguist-generated
+backend/tests/fixtures/** linguist-documentation
+docs/**             linguist-documentation
+.cursor/**          linguist-vendored

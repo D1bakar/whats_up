@@ -1,0 +1,53 @@
+name: Production readiness task
+description: Track work required for real-world / industry deployment
+title: "[Production]: "
+labels:
+  - production
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for deployment, security, observability, or operational hardening tasks.
+
+  - type: textarea
+    id: task
+    attributes:
+      label: Task description
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Security & secrets
+        - Observability (logs, metrics, tracing)
+        - Reliability (retries, queues, idempotency)
+        - Deployment & infrastructure
+        - Compliance & data handling
+        - Performance & scaling
+        - Documentation & runbooks
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — blocks production
+        - P1 — required for launch
+        - P2 — post-launch improvement
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] Documented in README or runbook
+        - [ ] Tested in staging
+        - [ ] No secrets in repository

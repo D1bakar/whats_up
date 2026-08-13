@@ -7,10 +7,30 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](docker/)
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)](docker/)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![Issues](https://img.shields.io/github/issues/D1bakar/whats_up)](https://github.com/D1bakar/whats_up/issues)
 
 > **WhatsApp Business automation** on the Meta Cloud API — webhooks, deterministic bot engine, conversation state, and a provider abstraction ready for production Meta credentials.
 
 A modular platform: **FastAPI** backend, **PostgreSQL** persistence, **Redis**, and a **Next.js** admin shell for future operator tooling.
+
+---
+
+## Languages & tech stack
+
+GitHub may group small languages under **Other** in the sidebar. This project uses **all** of the following:
+
+| Language / tech | Share | Used for |
+|-----------------|-------|----------|
+| ![Python](https://img.shields.io/badge/Python-97%25-3776AB?logo=python&logoColor=white) | ~97% | Backend API, bot engine, tests, migrations |
+| ![TypeScript](https://img.shields.io/badge/TypeScript-1%25-3178C6?logo=typescript&logoColor=white) | ~1% | Next.js admin frontend |
+| ![Docker](https://img.shields.io/badge/Dockerfile-1%25-2496ED?logo=docker&logoColor=white) | ~1% | Container images |
+| ![CSS](https://img.shields.io/badge/CSS-<1%25-1572B6?logo=css3&logoColor=white) | <1% | Frontend styles |
+| ![Shell](https://img.shields.io/badge/Shell-<1%25-4EAA25?logo=gnu-bash&logoColor=white) | <1% | Dev scripts |
+| ![JavaScript](https://img.shields.io/badge/JavaScript-<1%25-F7DF1E?logo=javascript&logoColor=black) | <1% | Frontend tooling |
+
+**Infrastructure & data:** PostgreSQL 16 · Redis 7 · Alembic · SQL · YAML (CI/Compose)
+
+See [docs/production-readiness.md](docs/production-readiness.md) for the full path to an industry-ready deployment.
 
 ---
 
@@ -37,6 +57,8 @@ A modular platform: **FastAPI** backend, **PostgreSQL** persistence, **Redis**, 
 | Admin dashboard / read API | Planned |
 | AI / LLM integration | Planned |
 | Billing and analytics | Not started |
+
+**Track production work:** [Open issues](https://github.com/D1bakar/whats_up/issues?q=is%3Aissue+label%3Aproduction) · [Production readiness checklist](docs/production-readiness.md)
 
 This repository is under active development. It is suitable for local development and integration testing, not production deployment without further hardening and configuration.
 
