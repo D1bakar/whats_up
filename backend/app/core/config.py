@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     )
 
     secret_key: str = Field(default="change-me-in-production", alias="SECRET_KEY")
+    access_token_expire_minutes: int = Field(default=15, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
 
     # WhatsApp provider selection
     whatsapp_provider: Literal["mock", "meta"] = Field(

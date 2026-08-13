@@ -8,7 +8,7 @@ Modular monolith:
 
 | Component | Role | Status |
 |-----------|------|--------|
-| FastAPI API | Webhooks, health checks, future admin REST | Active |
+| FastAPI API | Webhooks, health checks, admin REST | Active |
 | Bot engine | Deterministic message handling and state | Active |
 | PostgreSQL 16 | Durable state (conversations, messages, events) | Active |
 | Redis 7 | Readiness checks; future queue/cache | Connected |
@@ -109,7 +109,30 @@ Flow for natural-language text in `MAIN_MENU`:
 MessageProcessingService → BotEngine → AITextHandler → AIOrchestrator → AIProvider → BotResponse
 ```
 
-### 6. Persistence (`app/models/`)
+### 6. Admin API (`app/api/v1/`)
+
+Read-only operator endpoints protected by JWT + RBAC:
+
+| Method | Path | Min role | Purpose |
+|--------|------|----------|---------|
+| POST | `/api/v1/auth/login` | Public | Issue access token |
+| GET | `/api/v1/me` | operator | Current admin user |
+| GET | `/api/v1/conversations` | operator | Paginated conversation inbox |
+| GET | `/api/v1/conversations/{id}` | operator | Conversation detail + session |
+| GET | `/api/v1/conversations/{id}/messages` | operator | Message history |
+| GET | `/api/v1/contacts` | operator | Paginated contacts |
+| GET | `/api/v1/contacts/{id}` | operator | Contact detail |
+
+Auth utilities live in `app/core/security.py` (bcrypt password hashing, HS256 JWT). Admin users are stored in `admin_users` (seed manually or via migration script — no auto-seed in production).
+
+Services:
+
+| Service | Responsibility |
+|---------|----------------|
+| `AdminAuthService` | Credential verification, user lookup |
+| `AdminReadService` | Paginated read queries for inbox data |
+
+### 7. Persistence (`app/models/`)
 
 | Table | Purpose |
 |-------|---------|
@@ -119,7 +142,7 @@ MessageProcessingService → BotEngine → AITextHandler → AIOrchestrator → 
 | `conversation_sessions` | JSONB state machine context |
 | `messages` | Inbound/outbound records with processing status |
 | `business_accounts`, `phone_numbers` | Business phone number registry |
-| `admin_users` | Scaffold for future admin auth |
+| `admin_users` | Admin authentication and RBAC |
 
 ## Idempotency
 
@@ -173,12 +196,13 @@ See `.env.example` for all AI environment variables.
 | 1 — WhatsApp integration | Provider, webhooks, idempotency, outbound retries |
 | Bot engine | Commands, state machine, conversation persistence, message pipeline |
 | AI layer | Provider abstraction, orchestrator, context, prompts, limits, tool foundation |
+| Admin read API | JWT auth, paginated conversations/messages/contacts |
 
 ## Not yet implemented
 
-- Admin REST API and authentication
+- Admin dashboard UI (Next.js shell only)
+- Refresh tokens, logout, manual outbound messages
 - Background worker / queue-based processing
-- Admin dashboard functionality
 - Billing, analytics, `BotConfig` entity
 - Production deployment manifests beyond Docker Compose
 - AI tool execution (registry foundation only)
