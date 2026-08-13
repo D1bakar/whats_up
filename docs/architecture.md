@@ -96,6 +96,7 @@ The bot engine and webhook handlers never construct raw Meta HTTP requests.
 
 - **`AIProvider` protocol** — `generate_response`, `generate_structured_response`.
 - **`MockAIProvider`** — local dev and tests (default when `AI_PROVIDER=mock`).
+- **`OllamaProvider`** — local Ollama `/api/chat` adapter (e.g. `phi3:mini`; `OLLAMA_REQUEST_TIMEOUT=120`).
 - **`OpenAIProvider`** — httpx-based Chat Completions adapter (requires `OPENAI_API_KEY`).
 - **`AIOrchestrator`** — limits, retries, validation, fallback; does not send WhatsApp messages or access secrets.
 - **`ConversationContextBuilder`** — bounded recent message history with secret redaction.

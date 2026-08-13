@@ -40,7 +40,7 @@ This document tracks what is **done** vs **required** before treating WhatsApp P
 ### P2 — Product maturity
 
 - [ ] **Admin dashboard UI** — inbox, conversation view, message history
-- [ ] **AI / LLM integration** — optional, behind provider interface *(foundation done; OpenAI requires production key)*
+- [ ] **AI / LLM integration** — OpenAI cloud adapter *(done)*; Ollama local adapter *(done)*; production keys as needed
 - [ ] **Multi-tenant business accounts** — proper WABA / phone number onboarding
 - [ ] **Outbound message audit table** — dedicated `outbound_messages` entity per architecture
 - [ ] **Branch protection + required CI** on `main`/`master`

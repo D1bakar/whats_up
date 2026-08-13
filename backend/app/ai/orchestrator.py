@@ -77,7 +77,7 @@ class AIOrchestrator:
             "ai_request_started",
             conversation_id=conversation_id,
             provider=self._provider.name,
-            model=self._settings.ai_model,
+            model=self._settings.ai_model_name,
         )
 
         try:
@@ -96,7 +96,7 @@ class AIOrchestrator:
             prompt = build_prompt_bundle(context, user_message)
             request = AIRequest(
                 prompt=prompt,
-                model=self._settings.ai_model,
+                model=self._settings.ai_model_name,
                 max_output_tokens=self._settings.ai_max_output_tokens,
                 temperature=self._settings.ai_temperature,
             )
@@ -215,14 +215,14 @@ class AIOrchestrator:
         logger.info(
             "ai_fallback_used",
             provider=self._provider.name,
-            model=self._settings.ai_model,
+            model=self._settings.ai_model_name,
             latency_ms=latency_ms,
             reason=reason,
         )
         return AIResponse(
             text=text,
             provider=self._provider.name,
-            model=self._settings.ai_model,
+            model=self._settings.ai_model_name,
             latency=AILatencyMetadata(latency_ms=latency_ms),
             fallback_used=True,
         )

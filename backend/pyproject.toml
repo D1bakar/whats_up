@@ -1,6 +1,6 @@
 [project]
 name = "whatsapp-platform-backend"
-version = "0.1.0"
+version = "0.2.0"
 description = "WhatsApp Business Platform API"
 requires-python = ">=3.12,<3.15"
 dependencies = [
@@ -67,3 +67,6 @@ disable_error_code = ["name-defined"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
+markers = [
+    "ollama: optional live Ollama integration tests (set RUN_OLLAMA_INTEGRATION=1)",
+]

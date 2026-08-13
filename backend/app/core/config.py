@@ -70,13 +70,18 @@ class Settings(BaseSettings):
     )
 
     # AI provider selection
-    ai_provider: Literal["mock", "openai", "disabled"] = Field(
+    ai_provider: Literal["mock", "ollama", "openai", "disabled"] = Field(
         default="mock",
         alias="AI_PROVIDER",
     )
     openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
+    ollama_base_url: str = Field(default="http://127.0.0.1:11434", alias="OLLAMA_BASE_URL")
+    ollama_model: str = Field(default="phi3:mini", alias="OLLAMA_MODEL")
+    # Local CPU inference (Ollama): allow cold-start model load + generation (typ. 30–90s).
+    ollama_request_timeout: float = Field(default=120.0, alias="OLLAMA_REQUEST_TIMEOUT")
     ai_model: str = Field(default="gpt-4o-mini", alias="AI_MODEL")
-    ai_request_timeout: float = Field(default=30.0, alias="AI_REQUEST_TIMEOUT")
+    # Cloud LLM APIs (OpenAI): lower latency budget than local inference.
+    ai_request_timeout: float = Field(default=60.0, alias="AI_REQUEST_TIMEOUT")
     ai_max_input_chars: int = Field(default=4000, alias="AI_MAX_INPUT_CHARS")
     ai_max_output_tokens: int = Field(default=500, alias="AI_MAX_OUTPUT_TOKENS")
     ai_max_output_chars: int = Field(default=2000, alias="AI_MAX_OUTPUT_CHARS")
@@ -98,6 +103,19 @@ class Settings(BaseSettings):
     @property
     def openai_configured(self) -> bool:
         return bool(self.openai_api_key.strip())
+
+    @property
+    def ai_model_name(self) -> str:
+        if self.ai_provider == "ollama":
+            return self.ollama_model
+        return self.ai_model
+
+    @property
+    def effective_ai_request_timeout(self) -> float:
+        """Provider-aware HTTP timeout for AI generation requests."""
+        if self.ai_provider == "ollama":
+            return self.ollama_request_timeout
+        return self.ai_request_timeout
 
     @property
     def whatsapp_signature_required(self) -> bool:

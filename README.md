@@ -1,17 +1,25 @@
 # WhatsApp Platform
 
+[![Latest release](https://img.shields.io/github/v/release/D1bakar/whats_up?include_prereleases&sort=semver)](https://github.com/D1bakar/whats_up/releases)
+[![CI](https://github.com/D1bakar/whats_up/actions/workflows/ci.yml/badge.svg)](https://github.com/D1bakar/whats_up/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/D1bakar/whats_up?style=social)](https://github.com/D1bakar/whats_up/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/D1bakar/whats_up?style=social)](https://github.com/D1bakar/whats_up/forks)
+[![GitHub watchers](https://img.shields.io/github/watchers/D1bakar/whats_up?style=social)](https://github.com/D1bakar/whats_up/watchers)
+
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](backend/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](backend/)
+[![Ollama](https://img.shields.io/badge/Ollama-local%20LLM-black)](https://ollama.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white)](frontend/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](docker/)
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)](docker/)
-[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
-[![Issues](https://img.shields.io/github/issues/D1bakar/whats_up)](https://github.com/D1bakar/whats_up/issues)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](docker/)
 
-> **WhatsApp Business automation** on the Meta Cloud API — webhooks, deterministic bot engine, conversation state, and a provider abstraction ready for production Meta credentials.
+> **WhatsApp Business automation** — webhooks, deterministic bot engine, **AI orchestration** (Ollama / OpenAI / mock), conversation persistence, and provider abstractions ready for production Meta credentials.
 
 A modular platform: **FastAPI** backend, **PostgreSQL** persistence, **Redis**, and a **Next.js** admin shell for future operator tooling.
+
+**⭐ Star · 🍴 Fork · 👁 Watch** — [github.com/D1bakar/whats_up](https://github.com/D1bakar/whats_up)
 
 ---
 
@@ -40,9 +48,10 @@ See [docs/production-readiness.md](docs/production-readiness.md) for the full pa
 |---|---|
 | **Webhook ingestion** | Meta-compatible GET/POST `/webhooks/whatsapp` |
 | **Bot engine** | `/start`, `/help`, `/menu`, state machine, persistent sessions |
+| **AI layer** | Ollama (local), OpenAI, or mock — orchestrator with limits and fallback |
 | **Idempotency** | Event- and message-level dedup in PostgreSQL |
-| **Provider abstraction** | `mock` (default) or `meta` — swap via env, no code changes |
-| **Tests** | 43+ automated tests, mock provider only |
+| **Provider abstraction** | WhatsApp: `mock` \| `meta` · AI: `mock` \| `ollama` \| `openai` |
+| **Tests** | 75+ automated tests; mock HTTP — no live API keys required |
 
 ---
 
@@ -53,9 +62,9 @@ See [docs/production-readiness.md](docs/production-readiness.md) for the full pa
 | Application foundation | Complete |
 | WhatsApp integration (webhooks, provider abstraction, idempotency) | Complete |
 | Deterministic bot engine and conversation state | Complete |
+| AI layer (Ollama, OpenAI, mock orchestration) | Complete |
 | Meta production credentials | Not configured (`WHATSAPP_PROVIDER=mock` by default) |
 | Admin dashboard / read API | Planned |
-| AI / LLM integration | Planned |
 | Billing and analytics | Not started |
 
 **Track production work:** [Open issues](https://github.com/D1bakar/whats_up/issues?q=is%3Aissue+label%3Aproduction) · [Production readiness checklist](docs/production-readiness.md)
@@ -77,7 +86,8 @@ MessageProcessingService
     ↓
 Contact / Conversation / Message persistence
     ↓
-BotEngine → BotRouter → command & state handlers
+BotEngine → BotRouter → command & state handlers (deterministic)
+              └→ AITextHandler → AIOrchestrator → Ollama | OpenAI | mock
     ↓
 BotResponse (channel-independent)
     ↓
@@ -194,6 +204,9 @@ All variables are documented in [`.env.example`](.env.example). Key groups:
 |-------|---------|
 | `DATABASE_URL`, `REDIS_URL` | Infrastructure connections |
 | `WHATSAPP_PROVIDER` | `mock` (default) or `meta` |
+| `AI_PROVIDER` | `mock` (default), `ollama`, `openai`, or `disabled` |
+| `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_REQUEST_TIMEOUT` | Local Ollama (`phi3:mini`, 120s default timeout) |
+| `OPENAI_API_KEY`, `AI_MODEL`, `AI_REQUEST_TIMEOUT` | Cloud OpenAI (60s default timeout) |
 | `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET` | Webhook verification and signature validation |
 | `META_WHATSAPP_*` | Meta Cloud API credentials (required only when `WHATSAPP_PROVIDER=meta`) |
 | `SECRET_KEY` | Placeholder for future auth (Phase 2+) |
@@ -297,8 +310,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 |-------|-------|
 | Admin read API | Conversations, messages, contacts for operator inbox |
 | Admin UI | Dashboard wired to read API |
-| AI integration | LLM provider behind existing bot extension points |
 | Production hardening | Rate limits, observability, deployment runbooks |
+
+## Releases
+
+See [Releases](https://github.com/D1bakar/whats_up/releases) for version history.
+
+| Version | Highlights |
+|---------|------------|
+| **v0.2.0** | AI layer, Ollama provider, orchestrator, deployment guide |
+| v0.1.0 | Foundation, WhatsApp webhooks, bot engine |
 
 ## License
 
