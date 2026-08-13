@@ -1,6 +1,30 @@
 # WhatsApp Platform
 
-A modular WhatsApp Business Platform built on the [Meta Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api). The backend receives webhooks, runs a deterministic bot engine with persistent conversation state, and sends replies through a provider abstraction. A Next.js admin shell is included for future operator tooling.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](backend/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](backend/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white)](frontend/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](docker/)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)](docker/)
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+
+> **WhatsApp Business automation** on the Meta Cloud API — webhooks, deterministic bot engine, conversation state, and a provider abstraction ready for production Meta credentials.
+
+A modular platform: **FastAPI** backend, **PostgreSQL** persistence, **Redis**, and a **Next.js** admin shell for future operator tooling.
+
+---
+
+## Highlights
+
+| | |
+|---|---|
+| **Webhook ingestion** | Meta-compatible GET/POST `/webhooks/whatsapp` |
+| **Bot engine** | `/start`, `/help`, `/menu`, state machine, persistent sessions |
+| **Idempotency** | Event- and message-level dedup in PostgreSQL |
+| **Provider abstraction** | `mock` (default) or `meta` — swap via env, no code changes |
+| **Tests** | 43+ automated tests, mock provider only |
+
+---
 
 ## Status
 
@@ -256,4 +280,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## License
 
-No license file is included yet. **A license decision is required** before public distribution. Until then, all rights reserved.
+This project is licensed under the [MIT License](LICENSE).
