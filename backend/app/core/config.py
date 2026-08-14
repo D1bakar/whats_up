@@ -72,7 +72,8 @@ class Settings(BaseSettings):
 
     # AI provider selection
     ai_provider: Literal["mock", "ollama", "openai", "disabled"] = Field(
-        default="mock",
+        # Development default intentionally uses local Ollama for development workloads.
+        default="ollama",
         alias="AI_PROVIDER",
     )
     openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
